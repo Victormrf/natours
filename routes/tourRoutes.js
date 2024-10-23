@@ -10,7 +10,7 @@ const {
     deleteTour 
 } = require('../controllers/tourController');
 
-router.param('id', checkID);
+// router.param('id', checkID);
 
 router
     .route('/')
