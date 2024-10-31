@@ -53,6 +53,8 @@ exports.getTour = async (req, res) => {
     }
 }
 
+const 
+
 // Creates a new tour
 exports.createTour = async (req, res) => {
     try {
