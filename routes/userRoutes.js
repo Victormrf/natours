@@ -5,9 +5,14 @@ const {
     getUser,
     updateUser,
     deleteUser,
-} = require('../controllers/userController');
+} = require('./../controllers/userController');
+const {
+    signup
+} = require('./../controllers/authController')
 
-const router = express.Router();
+const router = express.Router(); 
+
+router.post('/signup', signup) // Special route where we can only POST data
 
 router.route('/')
     .get(getAllUsers)
