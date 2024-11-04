@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
 
     },
     photo: String,
+    role: {
+        type: String,
+        enum: ['user', 'guide', 'lead-guide', 'admin'],
+        default: 'user'
+    },
     password: { 
         type: String, 
         required: [true, 'The users password is invalid'],
@@ -36,7 +41,8 @@ const userSchema = new mongoose.Schema({
             },
             message: 'Passwords are not the same'
         }
-    }
+    }, 
+    passwordChangedAt: Date
 });
 
 // Mongoose middleware that manipulates password and passwordConfirm post schema creation
@@ -52,9 +58,22 @@ userSchema.pre('save', async function(next) {
 });
 
 // Instance method to be used to compare original password with hashed password
-userSchema.method.correctPassword = async function(candidatePassword, userPassword) {
+userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
 }
+
+// Instance method to verify i user changed its password after the JWT was issued
+userSchema.methods.changesPasswordAfter = function (JWTTimestamp) {
+    if(this.passwordChangedAt){
+        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+
+        return JWTTimestamp < changedTimestamp;
+    }
+
+    // False means NOT changed
+    return false;
+}
+
 // Creating the Model
 const User = mongoose.model('User', userSchema);
 

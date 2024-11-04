@@ -72,15 +72,31 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
     
     if(!token){
-        return next(new AppError('You must be logged in to gain access', 401));
+        return next(
+            new AppError('You must be logged in to gain access', 401)
+        );
     }
 
     // 2) Verification token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     // 3) Check if users still exists
+    const currentUser = await User.findById(decoded.id);
+
+    if(!currentUser){
+        return next(
+            new AppError('The user belonging to this token no longer exist.', 401)
+        );
+    }
 
     // 4) Check if user changed password after the JWT was issued
+    if(currentUser.changesPasswordAfter(decoded.iat)){
+        return next(
+            new AppError('User recently changed password! Please log in again.', 401)
+        );
+    }
 
+    // GRANTS ACCESS TO PROTECTED ROUTE
+    req.user = currentUser;
     next();
 });
