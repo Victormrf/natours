@@ -56,8 +56,17 @@ userSchema.pre('save', async function(next) {
     // hash the password with cost of 12
     this.password = await bcrypt.hash(this.password, 12);
 
-    //delete the passwordConfirm field -> not to persisted in the database, we only need it for the validation
+    //delete the passwordConfirm field -> not to be persisted in the database, we only need it for the validation
     this.passwordConfirm = undefined;
+});
+
+// Mongoose middleware that updates the changedPasswordAt property after a password reset
+userSchema.pre('save', async function(next) {
+    if(!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 1000; // this operations ensures the token is created after the password has been changed
+
+    next();
 });
 
 // Instance method to be used to compare original password with hashed password
