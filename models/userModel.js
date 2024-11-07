@@ -8,8 +8,8 @@ const userSchema = new mongoose.Schema({
 	name: {
         type: String,
         required: [true, 'An user must have a name'],
-		unique: true,
-		trim: true,
+		// unique: true,
+		// trim: true,
     },
     email: {
         type: String,
@@ -45,7 +45,12 @@ const userSchema = new mongoose.Schema({
     }, 
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    active: {
+        type: Boolean,
+        default: true,
+        select: false
+    }
 });
 
 // Mongoose middleware that manipulates password and passwordConfirm post schema creation
@@ -66,6 +71,12 @@ userSchema.pre('save', async function(next) {
 
     this.passwordChangedAt = Date.now() - 1000; // this operations ensures the token is created after the password has been changed
 
+    next();
+});
+
+userSchema.pre(/^find/, function(next) {
+    // this points to the current query
+    this.find({ active: { $ne: false } });
     next();
 });
 

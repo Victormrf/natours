@@ -5,6 +5,8 @@ const {
     getUser,
     updateUser,
     deleteUser,
+    updateMe,
+    deleteMe
 } = require('./../controllers/userController');
 const authController = require('./../controllers/authController')
 
@@ -14,6 +16,10 @@ router.post('/signup', authController.signup); // Special route where we can onl
 router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
+router.patch('/updateMyPassword', authController.protect, authController.updatePassword);
+
+router.patch('/updateMe', authController.protect, updateMe);
+router.delete('/deleteMe', authController.protect, deleteMe);
 
 router.route('/')
     .get(getAllUsers)
