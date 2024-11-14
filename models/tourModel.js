@@ -75,7 +75,31 @@ const tourSchema = new mongoose.Schema({
 	secretTour: {
 		type: Boolean,
 		default: false
-	}
+	},
+	startLocation: {
+		// GeoJSON
+		type: {
+			type: String,
+			default: 'Point',
+			enum: ['Point']
+		},
+		coordinates: [Number], //expects an array of numbers
+		address: String,
+		description: String
+	},
+	locations: [
+		{
+			type: {
+				type: String,
+				default: 'Point',
+				enum: ['Point']
+			},
+			coordinates: [Number], //expects an array of numbers
+			address: String,
+			description: String,
+			day: Number
+		}
+	]
 }, {
 	toJSON: { virtuals: true },
 	toObject: { virtuals: true }
@@ -85,14 +109,11 @@ tourSchema.virtual('durationWeeks').get(function() {
 	return this.duration / 7;
 });
 
-
-const Tour = mongoose.model('Tour', tourSchema);
-
 // DOCUMENT MIDDLEWARE: runs before the .save() and .create() event
-// tourSchema.pre('save', function(next) {
-// 	this.slug = slugify(this.name, { lower: true });
-// 	next();
-// });
+tourSchema.pre('save', function(next) {
+	this.slug = slugify(this.name, { lower: true });
+	next();
+});
 
 // tourSchema.post('save', function(doc, next) {
 // 	console.log(doc);
@@ -101,23 +122,25 @@ const Tour = mongoose.model('Tour', tourSchema);
 
 // QUERY MIDDLEWARE: 
 // tourSchema.pre('find', function(next) {
-// tourSchema.pre('/^find/', function(next) {
-// 	this.find({ secretTour: { $ne: true } });
-// 	this.start = Date.now();
-// 	next();
-// });
+tourSchema.pre('/^find/', function(next) {
+	this.find({ secretTour: { $ne: true } });
+	this.start = Date.now();
+	next();
+});
 
-// tourSchema.post('/^find/', function(docs, next) {
-// 	console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-// 	next();
-// });
+tourSchema.post('/^find/', function(docs, next) {
+	console.log(`Query took ${Date.now() - this.start} milliseconds!`);
+	next();
+});
 
 // AGGREGATION MIDDLEWARE: 
-// tourSchema.pre('aggregate', function(next) { 
-// 	this.pipeline.unshift({
-// 		$match: { secretTour: { $ne: true } }
-// 	})
-// 	next();
-// });
+tourSchema.pre('aggregate', function(next) { 
+	this.pipeline.unshift({
+		$match: { secretTour: { $ne: true } }
+	})
+	next();
+});
+
+const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
