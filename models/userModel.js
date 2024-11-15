@@ -3,7 +3,9 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-// Creating the Schema
+//=====================//
+//       SCHEMA        //
+//=====================//
 const userSchema = new mongoose.Schema({
 	name: {
         type: String,
@@ -53,6 +55,9 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+//=====================//
+//     MIDDLEWARES     //
+//=====================//
 // Mongoose middleware that manipulates password and passwordConfirm post schema creation
 userSchema.pre('save', async function(next) {
     // Only run the code if password was modified
@@ -80,6 +85,9 @@ userSchema.pre(/^find/, function(next) {
     next();
 });
 
+//====================//
+//  INSTANCE METHODS  //
+//====================//
 // Instance method to be used to compare original password with hashed password
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
@@ -110,8 +118,12 @@ userSchema.methods.createPasswordResetToken = function() {
     return resetToken;
 };
 
-// Creating the Model
+//=====================//
+//        MODEL        //
+//=====================//
 const User = mongoose.model('User', userSchema);
 
-// Exporting the Model
+//=====================//
+//        EXPORT       //
+//=====================//
 module.exports = User;
