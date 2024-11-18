@@ -33,6 +33,25 @@ const reviewSchema = new mongoose.Schema({
 });
 
 //=====================//
+//     MIDDLEWARES     //
+//=====================//
+// QUERY MIDDLEWARES
+reviewSchema.pre(/^find/, function(next) {
+    this.populate([
+        // {
+        //     path:'tour',
+        //     select: 'name' 
+	    // },
+        {
+            path:'user',
+            select: 'name photo' 
+        }
+    ]);
+
+    next();
+});
+
+//=====================//
 //        MODEL        //
 //=====================//
 const Review = mongoose.model('Review', reviewSchema);

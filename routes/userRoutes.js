@@ -8,7 +8,7 @@ const {
     updateMe,
     deleteMe
 } = require('./../controllers/userController');
-const authController = require('./../controllers/authController')
+const authController = require('./../controllers/authController');
 
 const router = express.Router(); 
 
@@ -29,5 +29,7 @@ router.route('/:id')
     .get(getUser)
     .patch(updateUser)
     .delete(deleteUser);
+
+
 
 module.exports = router;

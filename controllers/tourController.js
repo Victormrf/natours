@@ -2,6 +2,7 @@ const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const factory = require('./handlerFactory');
 
 exports.aliasTopTours = async (req, res, next) => {
     req.query.limit = '5';
@@ -31,7 +32,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 
 // Gets a specific tour based on its id
 exports.getTour = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findById(req.params.id); 
+    const tour = await Tour.findById(req.params.id).populate('reviews'); 
 
     if(!tour){
         return next(new AppError(`No tour found with the ID: ${req.params.id}`, 404))
@@ -43,56 +44,16 @@ exports.getTour = catchAsync(async (req, res, next) => {
             tour: tour
         }
     });
-})
+});
 
 // Creates a new tour
-exports.createTour = catchAsync(async (req, res, next) => {
-    const newTour = await Tour.create(req.body);
-
-    res.status(201).json({
-        status: "success",
-        data: {
-            tour: newTour
-        }
-    });
-});
+exports.createTour = factory.createOne(Tour);
 
 // Updates a tour
-exports.updateTour = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findByIdAndUpdate(
-        req.params.id, 
-        req.body, 
-        { 
-            new: true,
-            runValidators: true
-        }
-    );
-
-    if(!tour){
-        return next(new AppError(`No tour found with the ID: ${req.params.id}`, 404))
-    }
-
-    res.status(200).json({
-        status: 'success',
-        data: {
-            tour
-        }
-    });
-});
+exports.updateTour = factory.updateOne(Tour);
 
 // Deletes a tour
-exports.deleteTour = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findByIdAndDelete(req.params.id);
-
-    if(!tour){
-        return next(new AppError(`No tour found with the ID: ${req.params.id}`, 404))
-    }
-
-    res.status(204).json({
-        status: 'success',
-        data: null
-    });
-});
+exports.deleteTour = factory.deleteOne(Tour);
 
 // Function to calculate statistics about the tours
 exports.getTourStats = catchAsync(async (req, res, next) => {
