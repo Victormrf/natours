@@ -38,6 +38,7 @@ const tourSchema = new mongoose.Schema({
 		required: 4.5,
 		min: [1, 'Rating must be above 1.0'],
 		max: [5, 'Rating must be bellow or equal 5.0'],
+		set: value => Math.round(value * 10) / 10
 	},
 	ratingsQuantity: {
 		type: Number,
@@ -114,6 +115,9 @@ const tourSchema = new mongoose.Schema({
 	toJSON: { virtuals: true },
 	toObject: { virtuals: true }
 });
+
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
 
 //=====================//
 //    VIRTUAL FIELDS   //

@@ -6,7 +6,8 @@ const {
     updateUser,
     deleteUser,
     updateMe,
-    deleteMe
+    deleteMe,
+    getMe
 } = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
 
@@ -16,10 +17,14 @@ router.post('/signup', authController.signup); // Special route where we can onl
 router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
-router.patch('/updateMyPassword', authController.protect, authController.updatePassword);
 
-router.patch('/updateMe', authController.protect, updateMe);
-router.delete('/deleteMe', authController.protect, deleteMe);
+router.use(authController.protect); //whatever comes after this middleware only runs if this method runs correctly
+
+router.patch('/updateMyPassword', authController.updatePassword);
+
+router.get('/me', getMe, getUser);
+router.patch('/updateMe', updateMe);
+router.delete('/deleteMe', deleteMe);
 
 router.route('/')
     .get(getAllUsers)
