@@ -94,7 +94,7 @@ userSchema.methods.correctPassword = async function(candidatePassword, userPassw
 }
 
 // Instance method to verify i user changed its password after the JWT was issued
-userSchema.methods.changesPasswordAfter = function (JWTTimestamp) {
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     if(this.passwordChangedAt){
         const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
 
