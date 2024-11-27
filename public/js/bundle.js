@@ -74,7 +74,7 @@
         location.reload(true);
       }
     } catch (err) {
-      showError("error", "Error logging out! Try again");
+      showAlert("error", "Error logging out! Try again");
     }
   };
 
