@@ -7,7 +7,9 @@ const {
     deleteUser,
     updateMe,
     deleteMe,
-    getMe
+    getMe,
+    uploadUserPhoto,
+    resizeUserPhoto
 } = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
 
@@ -22,9 +24,12 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 router.use(authController.protect); //whatever comes after this middleware only runs if this method runs correctly
 
 router.patch('/updateMyPassword', authController.updatePassword);
-
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', 
+    uploadUserPhoto, 
+    resizeUserPhoto, 
+    updateMe
+);
 router.delete('/deleteMe', deleteMe);
 
 router.route('/')

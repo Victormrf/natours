@@ -65,7 +65,7 @@ app.use(hpp({
 // Test middlewares
 app.use((req, res, next) => {
     req.requestDate = new Date().toISOString();
-    console.log(req.cookies);
+    // console.log(req.cookies);
     next();
 });
 
