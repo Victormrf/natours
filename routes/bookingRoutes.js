@@ -12,7 +12,7 @@ router.get(
     bookingController.getCheckoutSession
 );
 
-router(authController.restrictTo('admin', 'leag-guide'));
+router.use(authController.restrictTo('admin', 'lead-guide'));
 
 router
     .route('/')
@@ -22,7 +22,6 @@ router
 router
     .route('/:id')
     .get(bookingController.getBooking)
-    .post(bookingController.updateBooking)
     .patch(bookingController.updateBooking)
     .delete(bookingController.deleteBooking);
 
