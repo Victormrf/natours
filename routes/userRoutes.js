@@ -1,19 +1,19 @@
 const express = require('express');
 const {
-    getAllUsers,
-    createUser,
-    getUser,
-    updateUser,
-    deleteUser,
-    updateMe,
-    deleteMe,
-    getMe,
-    uploadUserPhoto,
-    resizeUserPhoto
+  getAllUsers,
+  createUser,
+  getUser,
+  updateUser,
+  deleteUser,
+  updateMe,
+  deleteMe,
+  getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
 
-const router = express.Router(); 
+const router = express.Router();
 
 router.post('/signup', authController.signup); // Special route where we can only POST data
 router.post('/login', authController.login);
@@ -25,22 +25,11 @@ router.use(authController.protect); //whatever comes after this middleware only 
 
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', 
-    uploadUserPhoto, 
-    resizeUserPhoto, 
-    updateMe
-);
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
-router.route('/')
-    .get(getAllUsers)
-    .post(createUser);
+router.route('/').get(getAllUsers).post(createUser);
 
-router.route('/:id')
-    .get(getUser)
-    .patch(updateUser)
-    .delete(deleteUser);
-
-
+router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = router;

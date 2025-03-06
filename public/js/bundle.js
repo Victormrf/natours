@@ -97,7 +97,9 @@
   // public/js/stripe.js
   var bookTour = async (tourId) => {
     try {
-      const stripe = Stripe("pk_test_51QSuWUDuHI9lwyv3UCS5WnJTos77QaKSKTqOv3j97NzvU579iHtfTa2DuZG8AJfO6U3dLrl2XyAIp9Td9UgRtNu600Wy2g29BL");
+      const stripe = Stripe(
+        "pk_test_51QSuWUDuHI9lwyv3UCS5WnJTos77QaKSKTqOv3j97NzvU579iHtfTa2DuZG8AJfO6U3dLrl2XyAIp9Td9UgRtNu600Wy2g29BL"
+      );
       const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`);
       await stripe.redirectToCheckout({
         sessionId: session.data.session.id
@@ -147,7 +149,10 @@
       const passwordCurrent = document.getElementById("password-current").value;
       const password = document.getElementById("password").value;
       const passwordConfirm = document.getElementById("password-confirm").value;
-      await updateSettings({ passwordCurrent, password, passwordConfirm }, "password");
+      await updateSettings(
+        { passwordCurrent, password, passwordConfirm },
+        "password"
+      );
       document.querySelector(".btn--save-password").textContent = "Save password";
       document.getElementById("password-current").value = "";
       document.getElementById("password").value = "";
